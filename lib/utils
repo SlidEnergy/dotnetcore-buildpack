@@ -18,6 +18,7 @@ function install_dotnet() {
   local CACHE_DIR="$2"
   local DOTNET_SDK_VERSION="$3"
   local DOTNET_RUNTIME_VERSION="$4"
+  local DOTNET_TOOLS_VERSION="$5"
 
   local DOTNET_CACHE_LOCATION=${CACHE_DIR}/dotnet/${DOTNET_SDK_VERSION}
   if [ ! -d ${DOTNET_CACHE_LOCATION} ]; then
@@ -39,6 +40,11 @@ function install_dotnet() {
   export PATH="${DOTNET_CACHE_LOCATION}/sdk:$PATH"
   mkdir -p ${BUILD_DIR}/.heroku/dotnet
   cp -r ${DOTNET_CACHE_LOCATION}/runtime ${BUILD_DIR}/.heroku/dotnet
+  
+  topic "Install dotnet tools"
+  dotnet tool install -g dotnet-ef --version $DOTNET_TOOLS_VERSION
+  export PATH="$PATH:/app/.dotnet/tools"
+  export DOTNET_ROOT="${DOTNET_CACHE_LOCATION}/runtime"
 }
 
 export_env_dir() {
